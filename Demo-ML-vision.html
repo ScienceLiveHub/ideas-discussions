@@ -1,0 +1,683 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ScienceLive Zotero Plugin: Complete Workflow Demo</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #2c3e50 0%, #3498db 100%);
+            color: #333;
+            overflow: hidden;
+        }
+
+        .slide-container {
+            display: flex;
+            width: 800vw;
+            height: 100vh;
+            transition: transform 0.5s ease-in-out;
+        }
+
+        .slide {
+            width: 100vw;
+            height: 100vh;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            text-align: center;
+            position: relative;
+        }
+
+        .slide-content {
+            background: rgba(255, 255, 255, 0.98);
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 1100px;
+            width: 100%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            backdrop-filter: blur(10px);
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+
+        h1 {
+            font-size: 2.8rem;
+            margin-bottom: 20px;
+            color: #2c3e50;
+            font-weight: 700;
+        }
+
+        h2 {
+            font-size: 2.2rem;
+            margin-bottom: 25px;
+            color: #34495e;
+            font-weight: 600;
+        }
+
+        h3 {
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            color: #27ae60;
+            font-weight: 600;
+        }
+
+        p, li {
+            font-size: 1.1rem;
+            line-height: 1.6;
+            margin-bottom: 12px;
+            color: #2c3e50;
+        }
+
+        .workflow-step {
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
+            border-radius: 15px;
+            padding: 25px;
+            margin: 20px 0;
+            border-left: 5px solid #3498db;
+            text-align: left;
+        }
+
+        .step-number {
+            background: #3498db;
+            color: white;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            margin-right: 15px;
+            font-size: 1.2rem;
+        }
+
+        .mockup-browser {
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+            margin: 20px 0;
+            overflow: hidden;
+            max-width: 800px;
+            width: 100%;
+        }
+
+        .browser-header {
+            background: #f1f3f4;
+            padding: 12px 20px;
+            border-bottom: 1px solid #dadce0;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .browser-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27ca3f; }
+
+        .browser-url {
+            background: white;
+            border: 1px solid #dadce0;
+            border-radius: 20px;
+            padding: 6px 15px;
+            flex: 1;
+            margin-left: 20px;
+            font-size: 0.9rem;
+            color: #666;
+        }
+
+        .browser-content {
+            padding: 20px;
+            text-align: left;
+            font-size: 0.95rem;
+            line-height: 1.4;
+        }
+
+        .highlighted-text {
+            background: #fff3cd;
+            padding: 2px 4px;
+            border-radius: 3px;
+            border: 2px solid #ffc107;
+            display: inline-block;
+            margin: 2px;
+        }
+
+        .nanopub-form {
+            background: #f8f9fa;
+            border: 2px solid #dee2e6;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-label {
+            font-weight: 600;
+            color: #495057;
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ced4da;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            background: white;
+        }
+
+        .search-interface {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 25px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+        .search-box {
+            background: white;
+            border-radius: 25px;
+            padding: 15px 25px;
+            margin: 15px 0;
+            color: #333;
+            font-size: 1.1rem;
+            border: none;
+            width: 100%;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .search-result {
+            background: rgba(255, 255, 255, 0.95);
+            color: #333;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 10px 0;
+            text-align: left;
+            border-left: 4px solid #27ae60;
+        }
+
+        .navigation {
+            position: fixed;
+            bottom: 30px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 15px;
+            z-index: 1000;
+        }
+
+        .nav-btn {
+            background: rgba(255, 255, 255, 0.95);
+            border: none;
+            padding: 12px 24px;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 1rem;
+            font-weight: 600;
+            color: #2c3e50;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .nav-btn:hover {
+            background: #3498db;
+            color: white;
+            transform: translateY(-2px);
+        }
+
+        .nav-btn:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+        }
+
+        .slide-indicator {
+            position: fixed;
+            top: 30px;
+            right: 30px;
+            background: rgba(255, 255, 255, 0.95);
+            padding: 12px 20px;
+            border-radius: 25px;
+            font-weight: bold;
+            color: #2c3e50;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        .plugin-interface {
+            background: #e8f5e8;
+            border: 2px solid #27ae60;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+        }
+
+        .connection-arrow {
+            font-size: 2rem;
+            color: #3498db;
+            margin: 10px 0;
+        }
+
+        .highlight-demo {
+            position: relative;
+            background: white;
+            border: 2px solid #ddd;
+            border-radius: 10px;
+            padding: 20px;
+            margin: 15px 0;
+            text-align: left;
+        }
+
+        .highlight-demo::after {
+            content: "💡 Click to highlight text";
+            position: absolute;
+            top: -10px;
+            right: 10px;
+            background: #3498db;
+            color: white;
+            padding: 5px 10px;
+            border-radius: 15px;
+            font-size: 0.8rem;
+        }
+
+        .user-persona {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            background: #f8f9fa;
+            padding: 15px;
+            border-radius: 10px;
+            margin: 15px 0;
+        }
+
+        .avatar {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: #3498db;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 1.2rem;
+        }
+
+        .two-column {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 30px;
+            margin: 20px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="slide-indicator">
+        <span id="slideNumber">1</span> / 8
+    </div>
+
+    <div class="slide-container" id="slideContainer">
+        <!-- Slide 1: Title -->
+        <div class="slide">
+            <div class="slide-content">
+                <h1>ScienceLive Zotero Plugin</h1>
+                <h2>Complete Workflow Demo</h2>
+                <p style="font-size: 1.4rem; color: #7f8c8d; margin: 30px 0;">
+                    From Reading Papers to Knowledge Discovery
+                </p>
+                
+                <div class="workflow-step">
+                    <h3>Today's Journey:</h3>
+                    <p><strong>Part 1:</strong> Researcher creates nanopublications from AlexNet paper</p>
+                    <p><strong>Part 2:</strong> Another researcher discovers them through search</p>
+                    <p><strong>Result:</strong> Connected, reusable scientific knowledge</p>
+                </div>
+
+                <div class="user-persona">
+                    <div class="avatar">A</div>
+                    <div>
+                        <strong>Dr. Alice Chen</strong> - Computer Vision Researcher<br>
+                        <em>Creating nanopublications from the AlexNet paper</em>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 2: Opening Paper in Zotero -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 1: Opening the AlexNet Paper in Zotero</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">1</span>
+                    <strong>Dr. Alice opens the AlexNet paper in Zotero's PDF viewer</strong>
+                </div>
+
+                <div class="mockup-browser">
+                    <div class="browser-header">
+                        <div class="browser-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="browser-url">Zotero - ImageNet Classification with Deep CNNs</div>
+                    </div>
+                    <div class="browser-content">
+                        <h3 style="color: #2c3e50; margin-bottom: 15px;">ImageNet Classification with Deep Convolutional Neural Networks</h3>
+                        <p><em>Alex Krizhevsky, Ilya Sutskever, Geoffrey E. Hinton</em></p>
+                        
+                        <div style="margin: 20px 0; padding: 15px; background: #f8f9fa; border-radius: 8px;">
+                            <strong>Abstract:</strong> We trained a large, deep convolutional neural network to classify the 1.2 million high-resolution images in the ImageNet LSVRC-2010 contest into the 1000 different classes. <span class="highlighted-text">On the test data, we achieved top-1 and top-5 error rates of 37.5% and 17.0% which is considerably better than the previous state-of-the-art.</span>
+                        </div>
+
+                        <div class="plugin-interface">
+                            <strong>🔧 ScienceLive Plugin Active</strong>
+                            <p>Ready to create nanopublications from highlighted text</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 3: Highlighting Text -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 2: Highlighting Key Claims</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">2</span>
+                    <strong>Alice highlights a specific claim about AlexNet's performance</strong>
+                </div>
+
+                <div class="highlight-demo">
+                    <p>From the Abstract:</p>
+                    <p style="line-height: 1.8;">
+                        "We trained a large, deep convolutional neural network to classify the 1.2 million high-resolution images in the ImageNet LSVRC-2010 contest into the 1000 different classes. 
+                        <span class="highlighted-text" style="background: #ffeb3b; border-color: #ff9800;">
+                            On the test data, we achieved top-1 and top-5 error rates of 37.5% and 17.0% which is considerably better than the previous state-of-the-art. The neural network, which has 60 million parameters and 650,000 neurons, consists of five convolutional layers, some of which are followed by max-pooling layers, and three fully-connected layers with a final 1000-way softmax.
+                        </span>"
+                    </p>
+                </div>
+
+                <div class="connection-arrow">⬇️</div>
+
+                <div class="plugin-interface">
+                    <strong>✨ ScienceLive Plugin Triggered</strong>
+                    <p>Right-click menu appears: "Create Nanopublication from Selection"</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 4: Creating Nanopublication -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 3: Creating the Nanopublication</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">3</span>
+                    <strong>Plugin opens nanopublication creation form</strong>
+                </div>
+
+                <div class="nanopub-form">
+                    <div class="form-group">
+                        <label class="form-label">Claim:</label>
+                        <input class="form-input" value="A convolutional neural network with 5 convolutional layers and 3 fully connected layers achieves 17.0% top-5 error rate on ImageNet classification" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Subject:</label>
+                        <input class="form-input" value="AlexNet Architecture" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Predicate:</label>
+                        <select class="form-input">
+                            <option>achieves performance of</option>
+                        </select>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Object:</label>
+                        <input class="form-input" value="17.0% top-5 error rate on ImageNet" readonly>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label class="form-label">Evidence Source:</label>
+                        <input class="form-input" value="https://proceedings.neurips.cc/paper/2012/file/c399862d3b9d6b76c8436e924a68c45b-Paper.pdf" readonly>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 20px 0;">
+                    <button style="background: #27ae60; color: white; padding: 12px 25px; border: none; border-radius: 8px; font-weight: bold; cursor: pointer;">
+                        🚀 Publish Nanopublication
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 5: Nanopublication in Zotero -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 4: Nanopublication Saved in Zotero</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">4</span>
+                    <strong>Nanopublication appears in Alice's Zotero library</strong>
+                </div>
+
+                <div class="mockup-browser">
+                    <div class="browser-header">
+                        <div class="browser-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="browser-url">Zotero Library - My Nanopublications</div>
+                    </div>
+                    <div class="browser-content">
+                        <h3>📚 My Library > Nanopublications</h3>
+                        
+                        <div style="background: #e8f5e8; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #27ae60;">
+                            <strong>🔗 AlexNet Architecture Performance</strong><br>
+                            <em>Nanopublication ID: RA5aU0Cg0MKc5moV6xOk_ThBwxah5xipXgz6sy0F29N2Q</em><br>
+                            <span style="font-size: 0.9rem; color: #666;">Created: Today, 2:34 PM</span><br>
+                            <span style="font-size: 0.9rem; color: #666;">Status: ✅ Published to network</span>
+                        </div>
+
+                        <div style="background: #fff3cd; padding: 15px; border-radius: 8px; margin: 15px 0; border-left: 4px solid #ffc107;">
+                            <strong>📝 Related Annotations:</strong><br>
+                            • Highlighted text from AlexNet paper<br>
+                            • Connection to ImageNet dataset<br>
+                            • Links to ILSVRC-2012 benchmark
+                        </div>
+                    </div>
+                </div>
+
+                <p style="text-align: center; font-style: italic; color: #7f8c8d; margin-top: 20px;">
+                    Alice continues creating nanopublications for ReLU activation, transfer learning, etc.
+                </p>
+            </div>
+        </div>
+
+        <!-- Slide 6: New User Perspective -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Part 2: Knowledge Discovery</h2>
+                
+                <div class="user-persona">
+                    <div class="avatar">B</div>
+                    <div>
+                        <strong>Dr. Bob Martinez</strong> - Medical Imaging Researcher<br>
+                        <em>Searching for computer vision techniques for medical applications</em>
+                    </div>
+                </div>
+
+                <div class="workflow-step">
+                    <span class="step-number">5</span>
+                    <strong>Three months later, Bob needs CNN architectures for medical imaging</strong>
+                </div>
+
+                <div class="two-column">
+                    <div>
+                        <h3>Bob's Challenge:</h3>
+                        <ul style="text-align: left; padding-left: 20px;">
+                            <li>Developing chest X-ray classification system</li>
+                            <li>Needs proven CNN architectures</li>
+                            <li>Looking for transfer learning approaches</li>
+                            <li>Wants verified performance claims</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3>Traditional Approach:</h3>
+                        <ul style="text-align: left; padding-left: 20px;">
+                            <li>Search Google Scholar</li>
+                            <li>Read dozens of papers</li>
+                            <li>Manually extract claims</li>
+                            <li>Verify contradictory information</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <div style="text-align: center; margin: 30px 0; padding: 20px; background: #e8f5e8; border-radius: 10px;">
+                    <strong>🎯 With ScienceLive: Bob searches the nanopublication network directly</strong>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 7: Searching Nanodash -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 5: Searching in Nanodash</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">6</span>
+                    <strong>Bob searches the ScienceLive knowledge graph via Nanodash</strong>
+                </div>
+
+                <div class="search-interface">
+                    <h3 style="color: white; margin-bottom: 15px;">🔍 Nanodash Search Interface</h3>
+                    <input class="search-box" value="convolutional neural network medical imaging transfer learning" readonly>
+                    <p style="margin: 10px 0; opacity: 0.9;">Searching across 15,247 nanopublications...</p>
+                </div>
+
+                <div class="mockup-browser" style="margin-top: 20px;">
+                    <div class="browser-header">
+                        <div class="browser-dots">
+                            <div class="dot red"></div>
+                            <div class="dot yellow"></div>
+                            <div class="dot green"></div>
+                        </div>
+                        <div class="browser-url">nanodash.knowledgepixels.com/search</div>
+                    </div>
+                    <div class="browser-content">
+                        <h3>Search Results: 23 relevant nanopublications found</h3>
+                        <p style="color: #666; font-size: 0.9rem;">Ranked by relevance and connection strength</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Slide 8: Search Results -->
+        <div class="slide">
+            <div class="slide-content">
+                <h2>Step 6: Discovering Alice's Nanopublications</h2>
+                
+                <div class="workflow-step">
+                    <span class="step-number">7</span>
+                    <strong>Bob finds exactly what he needs - verified, actionable knowledge</strong>
+                </div>
+
+                <div class="search-result">
+                    <strong>🎯 AlexNet Architecture Performance</strong>
+                    <p><em>Claim:</em> A convolutional neural network with 5 convolutional layers and 3 fully connected layers achieves 17.0% top-5 error rate on ImageNet classification</p>
+                    <p><em>Evidence:</em> <a href="#">AlexNet paper (Krizhevsky et al., 2012)</a></p>
+                    <p><em>Connections:</em> → Transfer Learning Techniques → Medical Image Preprocessing</p>
+                    <span style="background: #3498db; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem;">Verified ✓</span>
+                </div>
+
+                <div class="search-result">
+                    <strong>⚡ ReLU Activation Function Benefits</strong>
+                    <p><em>Claim:</em> ReLU activation functions enable faster training and better convergence than sigmoid or tanh in deep networks</p>
+                    <p><em>Evidence:</em> Training time comparison data from AlexNet paper</p>
+                    <p><em>Connections:</em> → Deep Network Training → Gradient Flow Optimization</p>
+                    <span style="background: #27ae60; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem;">Executable ⚙️</span>
+                </div>
+
+                <div class="search-result">
+                    <strong>🔄 Transfer Learning for Medical Imaging</strong>
+                    <p><em>Claim:</em> Features from the 5th convolutional layer of AlexNet can be repurposed for medical image classification with minimal retraining</p>
+                    <p><em>Evidence:</em> Feature similarity analysis and medical application studies</p>
+                    <p><em>Connections:</em> → Medical Image Processing → Clinical Validation</p>
+                    <span style="background: #e74c3c; color: white; padding: 3px 8px; border-radius: 12px; font-size: 0.8rem;">High Impact 📈</span>
+                </div>
+
+                <div style="text-align: center; margin: 25px 0; padding: 20px; background: #d4edda; border-radius: 10px; border: 1px solid #c3e6cb;">
+                    <strong>🚀 Result: Bob can now build his medical imaging system in months, not years</strong><br>
+                    <em>Using verified components with clear provenance and proven performance</em>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="navigation">
+        <button class="nav-btn" id="prevBtn" onclick="changeSlide(-1)">← Previous</button>
+        <button class="nav-btn" id="nextBtn" onclick="changeSlide(1)">Next →</button>
+    </div>
+
+    <script>
+        let currentSlide = 0;
+        const totalSlides = 8;
+
+        function changeSlide(direction) {
+            currentSlide += direction;
+            
+            if (currentSlide < 0) currentSlide = 0;
+            if (currentSlide >= totalSlides) currentSlide = totalSlides - 1;
+            
+            const container = document.getElementById('slideContainer');
+            container.style.transform = `translateX(-${currentSlide * 100}vw)`;
+            
+            document.getElementById('slideNumber').textContent = currentSlide + 1;
+            
+            // Update button states
+            document.getElementById('prevBtn').disabled = currentSlide === 0;
+            document.getElementById('nextBtn').disabled = currentSlide === totalSlides - 1;
+        }
+
+        // Keyboard navigation
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'ArrowLeft') changeSlide(-1);
+            if (e.key === 'ArrowRight') changeSlide(1);
+            if (e.key === ' ') {
+                e.preventDefault();
+                changeSlide(1);
+            }
+        });
+
+        // Initialize
+        changeSlide(0);
+    </script>
+</body>
+</html>
